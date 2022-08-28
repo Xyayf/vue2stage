@@ -4,11 +4,7 @@
 //         ,_v("fdfaf"+_s(name)+"fdfgsaf"+_s(age)),_c('span',null
 //         ,_c('span',null
 //         ,_v("ffff"))),_c('span',null
-<<<<<<< HEAD
-//         ,_v("fesaf")))}ca
-=======
 //         ,_v("fesaf")))}
->>>>>>> 2c255571406ac1c71324679adace67ba5c6ea23a
 //     }
 // _c('div',{},children)
 import {createElementVNode,createTextVNode,patch} from './vdom/index'
