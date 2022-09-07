@@ -22,7 +22,7 @@ function VNode(vm,tag,key=undefined,props,children=[],text) {
         tag,
         props,
         key,
-        text,
+        text, 
         children
     }
 }
@@ -62,6 +62,11 @@ export function patch(oldVNode,VNode) {
        
     }else{
         ///diff算法
+        //1.两个节点不是同一个节点，直接删除老的换上新的（没有对比）
+        // 2.两个节点是同一个节点（判断节点的tag，节点key，节点属性是否有差异）
     }
+    
+}
+function isSameVnode(vnode1,vnode2){
     
 }

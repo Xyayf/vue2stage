@@ -34,12 +34,12 @@
         //初始化数据
         const vm = new Vue({
             date: {
-                name: 'afb',
+                name: '我是',
                 age: 20,
                 a: [5, [1, 2, 3]],
                 b: { h: 'h' }
             },
-            // template: "<div id='hhhh' >fdfaf{{name}}fdfgsaf {{age}}<span><span>ffff</span></span><span>fesaf</span></div>",
+            template: "<div id='hhhh' >fdfaf{{fullname}}<span><span>ffff</span></span><span>fesaf</span></div>",
             el: '#app',
             created() {
                 console.log("create")
@@ -47,34 +47,27 @@
             computed: {
                 fullname() {
                     console.log("computed")
-                    return this.name
+                    return this.name + this.age
                 }
             },
 
         })
 
 
-        vm.$watch(
-            function () {
-                // 表达式 `this.a + this.b` 每次得出一个不同的结果时
-                // 处理函数都会被调用。
-                // 这就像监听一个未被定义的计算属性
-                return this.name
-            },
-            function (newVal, oldVal) {
-                console.log(newVal, oldVal)
-            }
-        )
+        // vm.$watch(
+        //     function () {
+        //         // 表达式 `this.a + this.b` 每次得出一个不同的结果时
+        //         // 处理函数都会被调用。
+        //         // 这就像监听一个未被定义的计算属性
+        //         return this.name
+        //     },
+        //     function (newVal, oldVal) {
+        //         console.log(newVal, oldVal)
+        //     }
+        // )
         vm.name = 'sjws'
-        //解决方案
-        //1.模版引擎 性能差 需要正则匹配替换 1.0的时候 没有引入虚拟DOM的改变
-        //2.采用虚拟DOM 数据变化后比较虚拟DOM的差异 
 
-        //语法转化我们需要先变成语法树再重新组装代码成为新的语法
-        //vue 核心流程 1）创造了响应式数据  2）模版转化成ast语法树  
-        //3）将ast语法树转换成render函数    4）后续每次数据更新可以只执行render函数 无需要在此执行ast转化的过程
-        // render函数会去产生虚拟节点（使用响应式）
-        // 根据生成的虚拟节点创造真实的DOM
+
     </script>
 </body>
 

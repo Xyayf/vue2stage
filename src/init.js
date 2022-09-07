@@ -19,7 +19,7 @@ export function initMixin(Vue){//就是给Vue增加init方法
        
 
        //实现数据的挂载
-       if(options.el){//options没有写el选项时需要手动调用vm.$mount()
+       if(options.el){//options没有写el选项时需要手动调用vm.$mount() 在vm.$el挂载上生成的真实dom
            vm.$mount(options.el)
        }
        

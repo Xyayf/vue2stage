@@ -19,7 +19,7 @@ export  function initLifeCycle(Vue){
     }
     Vue.prototype._render=function(){//产生虚拟dom
         const vm=this
-        console.log(vm.$option.render.toString())
+       
         return vm.$option.render.call(vm)//让with中的this指向vm
     }
     //创建节点

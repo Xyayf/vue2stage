@@ -15,10 +15,14 @@ class Dep{//dep手机watcher
     addSub(watcher){
         this.subs.push(watcher)
        
+       
     }
     notify(){
        
-        this.subs.forEach(watcher=>watcher.update())
+        this.subs.forEach(watcher=>{
+            
+            watcher.update()
+        })
     }
 }
 Dep.target=null

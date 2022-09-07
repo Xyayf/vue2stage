@@ -156,11 +156,11 @@ function initDate(vm){
         return function(){
           const watcher=  this._computedWatchers[key]
           if(watcher.dirty){
-              watcher.evaluate() //弹出了计算watcher
+              watcher.evaluate() //弹出了计算watcher 
           }
           
           if(Dep.target){
-                watcher.depend() //watcher 在get时会把dep放在watcher实例的this.deps上 把渲染watcher放入队列中
+                watcher.depend() //watcher 在get时会把依赖的dep放在watcher实例的this.deps上 把渲染watcher放入队列中
           }
           return watcher.value
         }

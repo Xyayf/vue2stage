@@ -58,10 +58,14 @@
         addSub(watcher){
             this.subs.push(watcher);
            
+           
         }
         notify(){
            
-            this.subs.forEach(watcher=>watcher.update());
+            this.subs.forEach(watcher=>{
+                
+                watcher.update();
+            });
         }
     }
     Dep.target=null;
@@ -89,7 +93,7 @@
             this.cb=cb;
             this.lazy= option.lazy; 
            this.dirty=this.lazy;
-           this.user=option.user;   //标识是否用户自己的watcher
+           this.user=option.user;   //标识是否用户自己的watcher watched
           this.value=  this.lazy?undefined : this.get();
             
         }
@@ -116,13 +120,16 @@
             if(!this.depsId.has(id)){
                 this.deps.push(dep); //watcher->dep 
                 this.depsId.add(id);
+             
                 dep.addSub(this); // //  dep->watcher
+               
+                
             }
         }
         update(){
 
             if(this.lazy){
-                this.dirty=true;
+                this.dirty=true;  //计算watcher不存入队列
             }else {
                 //把当前的watcher暂存起来
             queueWatcher(this); 
@@ -132,7 +139,7 @@
         }
         depend(){
             let i =this.deps.length;
-            console.log(this.deps);
+           
             while(i--){
                 
                 this.deps[i].depend();
@@ -151,7 +158,7 @@
     let has={};
     let pending=false;
     function queueWatcher(watcher) {
-        
+        console.log(watcher);
         const id=watcher.id;
        if(!has[id]){
         has[id]=true;
@@ -382,11 +389,11 @@
             return function(){
               const watcher=  this._computedWatchers[key];
               if(watcher.dirty){
-                  watcher.evaluate(); //弹出了计算watcher
+                  watcher.evaluate(); //弹出了计算watcher 
               }
               
               if(Dep.target){
-                    watcher.depend(); //watcher 在get时会把dep放在watcher实例的this.deps上 把渲染watcher放入队列中
+                    watcher.depend(); //watcher 在get时会把依赖的dep放在watcher实例的this.deps上 把渲染watcher放入队列中
               }
               return watcher.value
             }
@@ -667,7 +674,7 @@
             tag,
             props,
             key,
-            text,
+            text, 
             children
         }
     }
@@ -720,7 +727,7 @@
         };
         Vue.prototype._render=function(){//产生虚拟dom
             const vm=this;
-            console.log(vm.$option.render.toString());
+           
             return vm.$option.render.call(vm)//让with中的this指向vm
         };
         //创建节点
@@ -818,7 +825,7 @@
            
 
            //实现数据的挂载
-           if(options.el){//options没有写el选项时需要手动调用vm.$mount()
+           if(options.el){//options没有写el选项时需要手动调用vm.$mount() 在vm.$el挂载上生成的真实dom
                vm.$mount(options.el);
            }
            

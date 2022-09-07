@@ -23,7 +23,7 @@ class Watcher{
         this.cb=cb
         this.lazy= option.lazy 
        this.dirty=this.lazy
-       this.user=option.user   //标识是否用户自己的watcher
+       this.user=option.user   //标识是否用户自己的watcher watched
       this.value=  this.lazy?undefined : this.get()
         
     }
@@ -50,13 +50,16 @@ class Watcher{
         if(!this.depsId.has(id)){
             this.deps.push(dep) //watcher->dep 
             this.depsId.add(id)
+         
             dep.addSub(this) // //  dep->watcher
+           
+            
         }
     }
     update(){
 
         if(this.lazy){
-            this.dirty=true
+            this.dirty=true  //计算watcher不存入队列
         }else{
             //把当前的watcher暂存起来
         queueWatcher(this) 
@@ -66,7 +69,7 @@ class Watcher{
     }
     depend(){
         let i =this.deps.length
-        console.log(this.deps)
+       
         while(i--){
             
             this.deps[i].depend()
@@ -85,7 +88,7 @@ let queue=[]
 let has={}
 let pending=false
 function queueWatcher(watcher) {
-    
+    console.log(watcher)
     const id=watcher.id
    if(!has[id]){
     has[id]=true
