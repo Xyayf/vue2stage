@@ -34,8 +34,12 @@ let render1= compileToFunction('<span>{{name}}</span>')
 let vm2=new Vue ({data:{name:'zf'}})
 let nextVnode=render2.call(vm2);
 
-let newElm=createElment(nextVnode)
+let newElm=createElment(nextVnode)  //普通算法要写这一步，diff算法不写这一步
+
+//普通方法
 el.parentNode.replaceChild(newElm,el)
+//diff算法
+patchVnode(preVnode,nextVnode)
 
 
 ```
@@ -49,7 +53,7 @@ function isSameVnode(vnode1,vnod2){
 
 
 function patchVnode(oldVNode,vnode){
-    if(isSameVnode(oldVNode,vnode)){
+    if(!isSameVnode(oldVNode,vnode)){
         let el =createElment(vnode)
         oldVNode.el.parentNode.replaceChild(el,oldNode.el)
         return el
@@ -126,8 +130,101 @@ function patchProps(el,oldProps,props){
 
 
 
-function updateChildren(el,oldChilred,newChilred){
+function updateChildren(el,oldChildren,newChildren){
     // vue2中采用双指针优化
+
+    let oldStartIndex=0
+    let oldEndIndex=oldChildren.length-1
+    let newStartIndex=0
+    let newEndIndex=newChildren.length-1
     
+    let oldStartVnode=oldChildren[0]
+    let newStarVnode=newChildren[0]
+
+    let oldEndVnode=oldChildren[oldEndIndex]
+    let newEndVnode=newChildren[newEndIndex]
+
+    function makeIndexByKey(children){
+        let map={}
+        children.forEach((child,index)=>{
+            map[child.key]=index
+        })
+        return map
+    }
+    let map=makeIndexByKey(oldChildren)
+    while(oldStartIndex<=oldEndIndex&&newStartIndex<=newEndIndex){ //双方有一个大于尾部指针则停止循环
+
+        if(!oldStartVnode){
+            oldStartVnode=oldChildren[++oldStartIndex]
+        }else if(!oldEndVnode){
+            oldSEndVnode=oldChildren[--oldEndIndex]
+        }else if(isSameVnode(oldStartVnode,newStartVnode)){  //以开头children节点开始  如果开头节点相同执行这个逻辑
+        patchVnode(oldStartVnode,newStartVnode)  
+        oldStartVnode=oldChildren[++oldStartIndex]
+        newStartVnode=newChildren[++newStartIndex]
+
+    }else if(isSameVnode(oldEndtVnode,newEndVnode)){  //以结尾children节点开始  如果结尾节点相同执着这个逻辑
+        patchVnode(oldEndtVnode,newEndVnode)  
+        oldSEndVnode=oldChildren[--oldEndIndex]
+        newEndVnode=newChildren[--newEndIndex]
+
+    }else if(isSameVnode(oldEndVnode,newStartVnode)){ //交叉比对 abcd -> dabc
+            patchVnode(oldEndtVnode,newEndVnode) 
+             el.insertBefore(oldEndVnode.el,oldStartVnode.el)  //将老的的尾巴移到前面去
+            oldSEndVnode=oldChildren[--oldEndIndex]
+            newStartVnode=newChildren[++newStartIndex]
+
+      }else if(isSameVnode(oldSartVnode,newEndVnode) ){ //交叉比对 abcd -> dcba
+          patchVnode(oldEndtVnode,newEndVnode) 
+           el.insertBefore(oldStartVnode.el,oldEndVnode.el.nextSibling)//将老头插到尾巴 
+            oldStartVnode=oldChildren[++oldStartIndex]
+            newEndVnode=newChildren[--newEndIndex]
+
+      } else{
+          //乱序比对 
+        // 根据老的列表做一个映射关系，用新的去找，找到移动，找不到添加到，多于的删除到循环结束时检查会删掉
+            let moveIndex=map[newStareVnode.key]
+            if(moveIndex!==undefined){
+                let moveVnode=oldChildren[moveIndex]
+                el.insertBefore(moveVnode.el,oldStartVnode.el) //找到了移动到开始
+                oldChildren[moveIndex]=undefined; //表示这个节点已经移走了
+                patchVnode(moveVnode,oldStartVnode) 
+            }else{
+                    el.insertBefore(createElment(newStareVnode),oldStartVnode.el) //找不到添加
+            }
+
+            newStartVnode=newChildren[++newStartIndex]
+
+      }
+
+
+    
+       
+      
+      
+    
+      
+
+
+    }
+    if(newStartIndex<=newEndIndex){ //新的多余的插入进去
+        for(let i=newStartIndex;i<=newEndIndex;i++){
+            let childElm=creatElement(newChildren[i])
+           
+            let anchor=newChildren[newEndIndex+1]? newChildren[newEndIndex+1].el:null 
+            el.insertBefore(childElm,anchor) //anchor 为null时会被认为是appendChild
+        }
+    }
+    if(oldStartIndex<=oldEndIndex){//老的多了删除
+        for (let i=oldStarIndex;i<=oldEndIndex,i++){
+           if(oldChildren[i]){
+                let childElm=oldChildren[i].el
+            el.removeChild(childElm)
+           }
+        }
+    }
+
 }
+
 ```
+[动态列表不使用索引](./img/动态列表key值问题.png)

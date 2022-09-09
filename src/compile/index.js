@@ -7,7 +7,7 @@ export function compileToFunction(template){
         
     // 2.生产render方法（render方法返回结果就是虚拟DOM
     let code=codegen(ast)
-    
+    console.log(code)
     code=`with(this){return ${code}}`
     let render=new Function(code) //根据代码生成render函数
    return render
@@ -16,10 +16,11 @@ export function compileToFunction(template){
 }
 
 function genProps(attrs) {
+    console.log(attrs)
     let str=''
     for(let i=0;i<attrs.length;i++){
         let attr=attrs[i]
-
+       
         if(attr.name==='style'){
             let obj={}
             attr.value.split(';').forEach(item=>{
@@ -29,6 +30,7 @@ function genProps(attrs) {
             attr.value=obj
         }
         str+=`${attr.name}:${JSON.stringify(attr.value)},`
+        
     }
 
     return `{${str.slice(0,-1)}}`

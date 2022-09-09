@@ -39,7 +39,7 @@
                 a: [5, [1, 2, 3]],
                 b: { h: 'h' }
             },
-            template: "<div id='hhhh' >fdfaf{{fullname}}<span><span>ffff</span></span><span>fesaf</span></div>",
+            template: "<div id='hhhh' style='color:red;' >fdfaf{{fullname}}<span><span>ffff</span></span><span>fesaf</span></div>",
             el: '#app',
             created() {
                 console.log("create")
@@ -65,7 +65,9 @@
         //         console.log(newVal, oldVal)
         //     }
         // )
-        vm.name = 'sjws'
+        setTimeout(() => {
+            vm.name = 'sjws'
+        }, 10000)
 
 
     </script>

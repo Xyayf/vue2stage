@@ -14,8 +14,18 @@ export  function initLifeCycle(Vue){
     Vue.prototype._update=function(VNode){//产生真实dom
         const vm=this
         const el=vm.$el
+        
         //patch()既有初始化的功能，又有更新的逻辑
-      vm.$el=  patch(el,VNode)
+      
+      const preVnode=vm._vnode
+      if(preVnode){
+         
+          vm.$el=  patch(preVnode,VNode)
+      }else{
+          vm.$el=  patch(el,VNode)
+      }
+      vm._vnode=VNode
+      
     }
     Vue.prototype._render=function(){//产生虚拟dom
         const vm=this
