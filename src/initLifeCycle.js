@@ -50,8 +50,11 @@ export  function initLifeCycle(Vue){
 
 export function mountComponent(vm,el){
     vm.$el=el
+   
     //调用render方法产生虚拟节点 虚拟dom
     const updateComponent=()=>{
+        
+        
         vm._update(vm._render())
     }
     

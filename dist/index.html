@@ -15,43 +15,43 @@
     </div>
     <script src="./vue.js"></script>
     <script>
-        Vue.mixin({
-            created() {
-                console.log("mixin")
-            },
-            date() {
-                a: 1
-            }
-        })
-        Vue.mixin({
-            created() {
-                console.log("mixin")
-            },
-            date() {
-                a: 1
-            }
-        })
-        //初始化数据
-        const vm = new Vue({
-            date: {
-                name: '我是',
-                age: 20,
-                a: [5, [1, 2, 3]],
-                b: { h: 'h' }
-            },
-            template: "<div id='hhhh' style='color:red;' >fdfaf{{fullname}}<span><span>ffff</span></span><span>fesaf</span></div>",
-            el: '#app',
-            created() {
-                console.log("create")
-            },
-            computed: {
-                fullname() {
-                    console.log("computed")
-                    return this.name + this.age
-                }
-            },
+        // Vue.mixin({
+        //     created() {
+        //         console.log("mixin")
+        //     },
+        //     date() {
+        //         a: 1
+        //     }
+        // })
+        // Vue.mixin({
+        //     created() {
+        //         console.log("mixin")
+        //     },
+        //     date() {
+        //         a: 1
+        //     }
+        // })
+        // //初始化数据
+        // const vm = new Vue({
+        //     date: {
+        //         name: '我是',
+        //         age: 20,
+        //         a: [5, [1, 2, 3]],
+        //         b: { h: 'h' }
+        //     },
+        //     template: "<div id='hhhh' style='color:red;' >fdfaf{{fullname}}<span><span>ffff</span></span><span>fesaf</span></div>",
+        //     el: '#app',
+        //     created() {
+        //         console.log("create")
+        //     },
+        //     computed: {
+        //         fullname() {
+        //             console.log("computed")
+        //             return this.name + this.age
+        //         }
+        //     },
 
-        })
+        // })
 
 
         // vm.$watch(
@@ -65,10 +65,26 @@
         //         console.log(newVal, oldVal)
         //     }
         // )
-        setTimeout(() => {
-            vm.name = 'sjws'
-        }, 10000)
+        // setTimeout(() => {
+        //     vm.name = 'sjws'
+        // }, 10000)
+        Vue.component("my-botton", {
+            template: "<div>全局组件</div>",
 
+        })
+        const Sub = Vue.extend({
+            template: "<div>实例<my-botton></my-botton></div>",
+            // components: {
+            //     "my-botton": {
+            //         template: "<div>私有组件</div>",
+            //     }
+            // }
+
+        })
+        let a = new Sub()
+        // debugger
+        a.$mount('#app')
+        console.log(a)
 
     </script>
 </body>

@@ -1,3 +1,13 @@
+const isReservedTag=(tag)=>{
+    return ['a','div','p','li','button','ul','span'].includes(tag)
+}
+
+
+
+
+
+
+
 //_c()创建元素节点
 export function createElementVNode(vm,tag,props={},...children) {//prop为attr
     if(props==null){
@@ -8,30 +18,79 @@ export function createElementVNode(vm,tag,props={},...children) {//prop为attr
     if(key){
         delete props.key
     }
-    return VNode(vm,tag,key,props,children)
+    if(isReservedTag(tag)){
+        return VNode(vm,tag,key,props,children)
+    }else{
+        //创建子节点的虚拟的节点my-button 拿到组件构造函数
+       
+        console.log(vm.$option.components)
+        let Constuctor=vm.$option.components[tag]
+
+        //得到的Constructor可能是一Sub类也可能是选项对象
+        return createComponentVnode(vm,tag,key,props,children,Constuctor)
+    }
 }
 
+function createComponentVnode(vm,tag,key,props,children,Constuctor){
+        if(typeof Constuctor==='object'){
+            Constuctor=vm.$option._base.extend(Constuctor)
+        }
+        props.hook={
+            init(vnode){ //稍后创建真实节点的时候，如果是组件则调用此init方法
+             let instance=  vnode.ComponentInstance=new vnode.componentOptions.Constuctor
+             
+             instance.$mount()
+             console.log(instance)
+             vnode.el=instance.$el
+             
+             return vnode.el
+            }
+        }
+        return VNode(vm,tag,key,props,children,null,{Constuctor})
+}
+
+
+function createComponent(vnode){
+  
+    let init=vnode.props
+    if((init=init.hook)&&(init=init.init)){
+        init(vnode)//初始化组件
+    }
+    if(vnode.el){
+        return true
+    }
+    
+}
 //_v()创建文本节点
 export function createTextVNode(vm,text) {
     return VNode(vm,undefined,undefined,undefined,undefined,text)
 }
 
-function VNode(vm,tag,key=undefined,props,children=[],text) {
+function VNode(vm,tag,key=undefined,props,children=[],text,componentOptions) {
     return {
         vm,
         tag,
         props,
         key,
         text, 
-        children
+        children,
+        componentOptions//组件构造函数
     }
 }
 function createElement(VNnode) {
     let {tag,props,children,text}=VNnode
     if(typeof tag ==='string'){
+
+
+        if(createComponent(VNnode)){
+            return VNnode.el
+        }
+
+
+
       VNnode.el=  document.createElement(tag)
       patchProps(VNnode.el,{},props)
-     
+    
       children.forEach(child=>{
          VNnode.el.appendChild(createElement(child)) 
       })
@@ -42,6 +101,10 @@ function createElement(VNnode) {
 }
 
 export function patch(oldVNode,VNode) {
+    if(!oldVNode){
+        let newElm= createElement(VNode)
+        return newElm
+    }
     const isRealElement=oldVNode.nodeType
     if(isRealElement){
         const elm=oldVNode

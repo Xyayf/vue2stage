@@ -26,7 +26,7 @@ export function initMixin(Vue){//就是给Vue增加init方法
     }
     Vue.prototype.$mount=function(el){//编译模版生成虚拟节点再变成真实节点挂载
         //el template render
-   
+        debugger
         const vm=this
        el=  document.querySelector(el)
        let opt=vm.$option
