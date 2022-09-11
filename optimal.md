@@ -16,3 +16,10 @@ initProvide(vm)
 callhooke(vm,'created')
 
 5.请求是异步任务 等同步代码执行以后才会做所以不纠结是放在created还是mounted上
+
+6.$attrs 不包含props 是响应式的
+    $listeners
+
+
+v-if v-for 哪个优先级高一些 v-if优先级更高    vue-template-explore 模版解析工具可以去试一试
+
